@@ -22,47 +22,83 @@ import {
 import {
   Colors,
   DebugInstructions,
-  Header,
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import {COLORS} from './variables';
+import {
+  BottomSummaryContainer,
+  Header,
+  Loader,
+  StockListing,
+} from './components';
+import {listStocks} from './services';
+import {ListOfStockT, SUMMARY} from './types';
+import styles from './styles';
+import {roundToTwoDecimal} from './utils';
+import TouchButton from './components/touchButton';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? Colors.darker : COLORS.primary,
   };
+
+  const [stockData, setStockData] = React.useState<ListOfStockT | []>([]);
+  const [summaryOpen, setSummary] = React.useState<boolean>(false);
+  const [summaryData, setSummaryData] = React.useState<SUMMARY>({
+    todayPNL: 0,
+    totalCurrentValue: 0,
+    totalInvestmentValue: 0,
+    totalPNL: 0,
+  });
+
+  React.useEffect(() => {
+    if (!stockData.length) {
+      getListOfStocks();
+    }
+  }, []);
+
+  const getListOfStocks = async () => {
+    try {
+      const result = await listStocks();
+      console.log('stocks -->', JSON.stringify(result));
+      if (result.data.userHolding) {
+        setStockData(result.data.userHolding);
+        getSummaryTotal(result.data.userHolding);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getSummaryTotal = (dat: ListOfStockT) => {
+    let totalCurrentValue = 0,
+      totalInvestmentValue = 0,
+      totalPNL = 0,
+      todayPNL = 0;
+    dat.forEach(item => {
+      totalCurrentValue += item.ltp * item.quantity;
+      totalInvestmentValue += item.avgPrice * item.quantity;
+      todayPNL += (item.close - item.ltp) * item.quantity;
+    });
+    todayPNL = roundToTwoDecimal(todayPNL);
+    totalPNL = roundToTwoDecimal(totalCurrentValue - totalInvestmentValue);
+    totalCurrentValue = roundToTwoDecimal(totalCurrentValue);
+    totalInvestmentValue = roundToTwoDecimal(totalInvestmentValue);
+    setSummaryData({
+      totalCurrentValue,
+      todayPNL,
+      totalInvestmentValue,
+      totalPNL,
+    });
+  };
+
+  if (!stockData.length) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -70,51 +106,23 @@ const App = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+      <View style={styles.container}>
+        <Header title={'Upstocks Holding'} />
+        <StockListing data={stockData} />
+        <TouchButton
+          open={summaryOpen}
+          onPress={() => setSummary(prevState => !prevState)}
+        />
+        <BottomSummaryContainer
+          open={summaryOpen}
+          totalCurrentValue={summaryData.totalCurrentValue}
+          totalInvestment={summaryData.totalInvestmentValue}
+          totalPNL={summaryData.totalPNL}
+          todayPNL={summaryData.todayPNL}
+        />
+      </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
