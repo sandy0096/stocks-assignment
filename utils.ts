@@ -3,16 +3,19 @@
  */
 
 export const memoize = (func: (...args: number[]) => number) => {
-  const cache: Record<string, number> = {};
+  const cache: Map<string, number> = new Map();
   return (...args: number[]): number => {
     const key = args.join(','); // key
-    if (cache.hasOwnProperty(key)) {
+    if (cache.has(key)) {
       console.log('fetching from cache');
-      return cache[key];
+      const result = cache.get(key);
+      if (result !== undefined) {
+        return result;
+      }
     }
     console.log('adding to cache');
     const res = func.apply(this, args);
-    cache[key] = res;
+    cache.set(key, res);
     return res;
   };
 };

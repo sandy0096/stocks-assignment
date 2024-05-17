@@ -97,7 +97,7 @@ const App = () => {
   };
 
   if (!stockData.length) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -110,9 +110,9 @@ const App = () => {
         <Header title={'Upstocks Holding'} />
         <StockListing data={stockData} />
         <TouchButton
-          open={summaryOpen}
-          onPress={() => setSummary(prevState => !prevState)}
-        />
+            open={summaryOpen}
+            onPress={() => setSummary(prevState => !prevState)}
+          />
         <BottomSummaryContainer
           open={summaryOpen}
           totalCurrentValue={summaryData.totalCurrentValue}

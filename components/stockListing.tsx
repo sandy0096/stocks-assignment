@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {FlatList, View, FlatListProps} from 'react-native';
+import {FlatList} from 'react-native';
 import {ListOfStockT} from '../types';
 import {StockContainer} from '../components';
 import {evaluateProfitLoss, memoize} from '../utils';
@@ -10,7 +10,7 @@ type ListingProps = {
 
 const mInstance = memoize(evaluateProfitLoss);
 
-const StockListing = ({data}: ListingProps) => {
+const StockListing = ({data}: ListingProps): React.ReactNode => {
   return (
     <FlatList
       data={data}

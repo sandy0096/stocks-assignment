@@ -16,7 +16,7 @@ const BottomSummaryContainer = ({
   totalInvestment,
   totalPNL,
   todayPNL,
-}: BottomSummaryContainerProps) => {
+}: BottomSummaryContainerProps): React.ReactNode => {
   const popAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -30,7 +30,7 @@ const BottomSummaryContainer = ({
   const popUp = () => {
     Animated.timing(popAnim, {
       toValue: 180,
-      duration: 400,
+      duration: 300,
       useNativeDriver: false,
     }).start();
   };
@@ -38,7 +38,7 @@ const BottomSummaryContainer = ({
   const popDown = () => {
     Animated.timing(popAnim, {
       toValue: 0,
-      duration: 400,
+      duration: 300,
       useNativeDriver: false,
     }).start();
   };

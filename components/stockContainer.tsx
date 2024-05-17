@@ -16,7 +16,7 @@ const StockContainer = ({
   quantity,
   ltp,
   profitLoss,
-}: StockContainerProps) => {
+}: StockContainerProps): React.ReactNode => {
   return (
     <View style={styles.stockBox}>
       <View style={styles.stockRow}>

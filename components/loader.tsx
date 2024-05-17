@@ -4,7 +4,7 @@ import styles from '../styles';
 
 type LoaderProps = {};
 
-const Loader = ({}: LoaderProps) => {
+const Loader = ({}: LoaderProps): React.ReactNode => {
   return (
     <View style={[styles.fullView, styles.center]}>
       <Text>Loading...</Text>

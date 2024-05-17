@@ -6,7 +6,7 @@ type HeaderProps = {
   title: string;
 };
 
-const Header = ({title}: HeaderProps) => {
+const Header = ({title}: HeaderProps): React.ReactNode => {
   return (
     <View style={styles.headerBox}>
       <Text style={styles.headerText}>{title}</Text>
