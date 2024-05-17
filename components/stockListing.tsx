@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, View, FlatListProps} from 'react-native';
 import {ListOfStockT} from '../types';
 import {StockContainer} from '../components';
 import {evaluateProfitLoss, memoize} from '../utils';

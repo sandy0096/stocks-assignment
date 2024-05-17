@@ -7,7 +7,7 @@ type LoaderProps = {};
 const Loader = ({}: LoaderProps) => {
   return (
     <View style={[styles.fullView, styles.center]}>
-      <Text style={styles.textCenter}>Loading...</Text>
+      <Text>Loading...</Text>
     </View>
   );
 };

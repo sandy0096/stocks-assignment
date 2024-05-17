@@ -72,20 +72,18 @@ export default StyleSheet.create({
     height: 0,
     backgroundColor: 'transparent',
     borderStyle: 'solid',
-    borderLeftWidth: 15,
-    borderRightWidth: 15,
-    borderBottomWidth: 25,
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 35,
     alignSelf: 'center',
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: COLORS.primary,
   },
   triangleDown: {
+    borderLeftWidth: 15,
+    borderRightWidth: 15,
+    borderBottomWidth: 25,
     transform: [{rotate: '180deg'}],
   },
-  buttonClose: {
-    position: 'absolute',
-    bottom: 5,
-    alignSelf: 'center'
-  }
 });
