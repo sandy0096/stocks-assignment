@@ -54,6 +54,7 @@ const App = () => {
     totalInvestmentValue: 0,
     totalPNL: 0,
   });
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     if (!stockData.length) {
@@ -62,19 +63,22 @@ const App = () => {
   }, []);
 
   const getListOfStocks = async () => {
+    setLoading(true);
     try {
       const result = await listStocks();
       console.log('stocks -->', JSON.stringify(result));
+      setLoading(false);
       if (result.data.userHolding) {
         setStockData(result.data.userHolding);
-        getSummaryTotal(result.data.userHolding);
+        createSummaryTotal(result.data.userHolding);
       }
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
-  const getSummaryTotal = (dat: ListOfStockT) => {
+  const createSummaryTotal = (dat: ListOfStockT) => {
     let totalCurrentValue = 0,
       totalInvestmentValue = 0,
       totalPNL = 0,
@@ -96,7 +100,7 @@ const App = () => {
     });
   };
 
-  if (!stockData.length) {
+  if (loading) {
     return <Loader />;
   }
 
