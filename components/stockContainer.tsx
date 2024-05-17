@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View, Text} from 'react-native';
 import styles from '../styles';
 
@@ -11,29 +11,38 @@ type StockContainerProps = {
   profitLoss: number;
 };
 
-const StockContainer = ({
-  symbol,
-  quantity,
-  ltp,
-  profitLoss,
-}: StockContainerProps): React.ReactNode => {
-  return (
-    <View style={styles.stockBox}>
-      <View style={styles.stockRow}>
-        <Text style={styles.stockTextBold}>{symbol}</Text>
-        <Text>
-          LTP: <Text style={styles.stockTextMedium}>₹ {ltp}</Text>
-        </Text>
-      </View>
+const StockContainer = memo(
+  ({
+    symbol,
+    quantity,
+    ltp,
+    profitLoss,
+  }: StockContainerProps): React.ReactNode => {
+    return (
+      <View style={styles.stockBox}>
+        <View style={styles.stockRow}>
+          <Text style={styles.stockTextBold}>{symbol}</Text>
+          <Text>
+            LTP: <Text style={styles.stockTextMedium}>₹ {ltp}</Text>
+          </Text>
+        </View>
 
-      <View style={[styles.stockRow, styles.withTopGap]}>
-        <Text>{quantity}</Text>
-        <Text>
-          P/L: <Text style={styles.stockTextMedium}>₹ {profitLoss}</Text>
-        </Text>
+        <View style={[styles.stockRow, styles.withTopGap]}>
+          <Text>{quantity}</Text>
+          <Text>
+            P/L: <Text style={styles.stockTextMedium}>₹ {profitLoss}</Text>
+          </Text>
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.profitLoss === nextProps.profitLoss ||
+      prevProps.quantity === nextProps.quantity ||
+      prevProps.ltp === prevProps.ltp
+    );
+  },
+);
 
 export default StockContainer;
